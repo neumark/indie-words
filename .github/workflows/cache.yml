@@ -1,0 +1,33 @@
+# immediately.run cache — publishes this repo's pre-cached zips on GitHub Pages.
+#
+# A stub: the job lives in new-project-template's .github/workflows/zip-cache.yml,
+# called at @main, so a fix there reaches this repo on its next run. Rendered by
+# new-project-template scripts/zip-cache-stub.mjs — do not edit by hand; a
+# hand-edited stub is reported as drift (ZIP_CACHE_AUTOMATION_SPEC §8).
+
+name: Cache for immediately.run
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never run two Pages deploys at once; let an in-progress one finish. Here, not in
+# the shared job: the same group in caller and callee deadlocks.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  cache:
+    uses: immediately-run/new-project-template/.github/workflows/zip-cache.yml@main
+    with:
+      landing-html: ''
+    secrets:
+      DEPLOY_APP_ID: ${{ secrets.DEPLOY_APP_ID }}
+      DEPLOY_APP_PRIVATE_KEY: ${{ secrets.DEPLOY_APP_PRIVATE_KEY }}
